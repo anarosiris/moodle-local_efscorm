@@ -1,0 +1,113 @@
+# Integración continua con moodle-plugin-ci (la misma batería de
+# comprobaciones que pasa el equipo de revisión de moodle.org).
+name: Moodle Plugin CI
+
+# Solo ramas: una etiqueta sobre un commit ya probado no vuelve a lanzar la batería (ahorro de minutos).
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-22.04
+    continue-on-error: ${{ matrix.experimental || false }}
+
+    services:
+      mariadb:
+        # 5.3 exige MariaDB 11.4: la entrada «main» de la matriz la pide; el resto sigue en 10.11.
+        image: mariadb:${{ matrix.mariadb || '10.11' }}
+        env:
+          MYSQL_USER: 'root'
+          MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+          MYSQL_CHARACTER_SET_SERVER: "utf8mb4"
+          MYSQL_COLLATION_SERVER: "utf8mb4_unicode_ci"
+        ports:
+          - 3306:3306
+        options: --health-cmd="mariadb-admin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: 'postgres'
+          POSTGRES_HOST_AUTH_METHOD: 'trust'
+        ports:
+          - 5432:5432
+        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '8.2'
+            moodle-branch: 'MOODLE_501_STABLE'
+          - php: '8.3'
+            moodle-branch: 'MOODLE_501_STABLE'
+          - php: '8.3'
+            moodle-branch: 'MOODLE_502_STABLE'
+          # PostgreSQL: requisito del Moodle Marketplace (approval blocker si
+          # el plugin solo funciona con MySQL/MariaDB).
+          - php: '8.3'
+            moodle-branch: 'MOODLE_501_STABLE'
+            db: 'pgsql'
+          - php: '8.3'
+            moodle-branch: 'MOODLE_502_STABLE'
+            db: 'pgsql'
+          # Rama de desarrollo de Moodle (la futura 5.3): solo vigía, nunca
+          # bloquea — si algo se rompe aquí, lo sabremos meses antes que
+          # ningún cliente.
+          - php: '8.3'
+            moodle-branch: 'main'
+            experimental: true
+            mariadb: '11.4'
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          path: plugin
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mysqli, pgsql, gd, zip, intl, soap
+          ini-values: max_input_vars=5000
+          coverage: none
+
+      - name: Initialise moodle-plugin-ci
+        run: |
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
+          echo $(cd ci/bin; pwd) >> $GITHUB_PATH
+          echo $(cd ci/vendor/bin; pwd) >> $GITHUB_PATH
+          sudo locale-gen en_AU.UTF-8
+          echo "NVM_DIR=$HOME/.nvm" >> $GITHUB_ENV
+
+      - name: Install Moodle + plugin
+        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+        env:
+          DB: ${{ matrix.db || 'mariadb' }}
+          MOODLE_BRANCH: ${{ matrix.moodle-branch }}
+
+      - name: PHP Lint
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phplint
+
+      - name: Moodle Code Checker (phpcs)
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpcs --max-warnings 0
+
+      - name: Moodle PHPDoc Checker
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpdoc --max-warnings 0
+
+      - name: Validate plugin structure
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci validate
+
+      - name: Check upgrade savepoints
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci savepoints
+
+      - name: PHPUnit tests
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpunit --fail-on-warning
