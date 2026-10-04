@@ -21,13 +21,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ci:
+  # Elige qué entradas de la matriz corren (GitHub no deja leer `matrix` en el `if` de un job):
+  # push de rama = solo la entrada quick; etiqueta, pull request o manual = todas.
+  # Un push de rama cuyo commit empieza por «release » no corre nada: su etiqueta ya lo hace.
+  prepare:
     runs-on: ubuntu-22.04
-    # Nivel: en un push de rama solo la entrada quick (y nada si es el commit de una release).
     if: >-
-      ${{ (github.event_name != 'push' || github.ref_type == 'tag' || matrix.quick)
-          && !(github.event_name == 'push' && github.ref_type == 'branch'
-               && startsWith(github.event.head_commit.message, 'release ')) }}
+      ${{ !(github.event_name == 'push' && github.ref_type == 'branch'
+            && startsWith(github.event.head_commit.message, 'release ')) }}
+    outputs:
+      include: ${{ steps.pick.outputs.include }}
+    steps:
+      - id: pick
+        env:
+          FULL: '[{"php":"8.2","moodle-branch":"MOODLE_501_STABLE"},{"php":"8.3","moodle-branch":"MOODLE_502_STABLE","quick":true,"behat":true},{"php":"8.3","moodle-branch":"MOODLE_502_STABLE","db":"pgsql"},{"php":"8.3","moodle-branch":"main","experimental":true,"mariadb":"11.4"}]'
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref_type }}" = "branch" ]; then
+            echo "include=$(echo "$FULL" | jq -c '[.[] | select(.quick == true)]')" >> "$GITHUB_OUTPUT"
+          else
+            echo "include=$(echo "$FULL" | jq -c .)" >> "$GITHUB_OUTPUT"
+          fi
+
+  ci:
+    needs: prepare
+    runs-on: ubuntu-22.04
     continue-on-error: ${{ matrix.experimental || false }}
 
     services:
@@ -54,25 +71,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - php: '8.2'
-            moodle-branch: 'MOODLE_501_STABLE'
-          - php: '8.3'
-            moodle-branch: 'MOODLE_502_STABLE'
-            quick: true   # la única entrada de un push normal
-            behat: true   # Behat solo aquí
-          # PostgreSQL: requisito del Moodle Marketplace (approval blocker si
-          # el plugin solo funciona con MySQL/MariaDB).
-          - php: '8.3'
-            moodle-branch: 'MOODLE_502_STABLE'
-            db: 'pgsql'
-          # Rama de desarrollo de Moodle (la futura 5.3): solo vigía, nunca
-          # bloquea — si algo se rompe aquí, lo sabremos meses antes que
-          # ningún cliente.
-          - php: '8.3'
-            moodle-branch: 'main'
-            experimental: true
-            mariadb: '11.4'
+        include: ${{ fromJSON(needs.prepare.outputs.include) }}
 
     steps:
       - name: Check out repository code
