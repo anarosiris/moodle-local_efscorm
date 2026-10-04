@@ -2,15 +2,32 @@
 # comprobaciones que pasa el equipo de revisión de moodle.org).
 name: Moodle Plugin CI
 
-# Solo ramas: una etiqueta sobre un commit ya probado no vuelve a lanzar la batería (ahorro de minutos).
+# Disparadores (presupuesto de Actions, 04-10-2026):
+#  - push a una rama: solo la entrada «quick» de la matriz (8.3 + 5.2 + MariaDB, con Behat);
+#    si el commit empieza por «release », no corre nada (la etiqueta lanza la matriz completa);
+#  - push de una etiqueta v*, pull request o lanzamiento manual: la matriz completa;
+#  - cambios solo en docs/ o en ficheros .md no lanzan nada.
 on:
   push:
     branches: ['**']
+    tags: ['v*']
+    paths-ignore: ['docs/**', '**.md']
   pull_request:
+  workflow_dispatch:
+
+# Un push nuevo a la misma rama cancela el run anterior todavía en marcha.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ci:
     runs-on: ubuntu-22.04
+    # Nivel: en un push de rama solo la entrada quick (y nada si es el commit de una release).
+    if: >-
+      ${{ (github.event_name != 'push' || github.ref_type == 'tag' || matrix.quick)
+          && !(github.event_name == 'push' && github.ref_type == 'branch'
+               && startsWith(github.event.head_commit.message, 'release ')) }}
     continue-on-error: ${{ matrix.experimental || false }}
 
     services:
@@ -41,14 +58,11 @@ jobs:
           - php: '8.2'
             moodle-branch: 'MOODLE_501_STABLE'
           - php: '8.3'
-            moodle-branch: 'MOODLE_501_STABLE'
-          - php: '8.3'
             moodle-branch: 'MOODLE_502_STABLE'
+            quick: true   # la única entrada de un push normal
+            behat: true   # Behat solo aquí
           # PostgreSQL: requisito del Moodle Marketplace (approval blocker si
           # el plugin solo funciona con MySQL/MariaDB).
-          - php: '8.3'
-            moodle-branch: 'MOODLE_501_STABLE'
-            db: 'pgsql'
           - php: '8.3'
             moodle-branch: 'MOODLE_502_STABLE'
             db: 'pgsql'
