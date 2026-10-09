@@ -1,7 +1,7 @@
-# SPEC · local_efscorm — «Reproductor SCORM directo» (borrador 0.1, 03-10-2026)
+# SPEC · local_efscorm — «Reproductor SCORM directo» (0.2, 10-10-2026)
 
 Fuente de la verdad del plugin. Lo marcado como **PROPUESTA** no está decidido: Ana lo confirma o lo cambia.
-Las preguntas abiertas están al final (§9). El prototipo 0.1.0 solo construye lo que ninguna pregunta puede cambiar.
+Las preguntas del §9 quedaron DECIDIDAS por Ana el 09-10-2026 (respuestas junto a cada una); 0.2.0 las aplica.
 
 ## 1. Qué pidió Ana (02-10-2026)
 
@@ -76,22 +76,24 @@ marcas en los nombres. Alternativas: `local_efplayer` («Reproductor directo»),
 
 ## 8. Estado
 
+- 10-10-2026: **0.2.0** con las 8 decisiones aplicadas, tests PHPUnit y Behat, guía corta y CI; primera versión
+  publicable (repo remoto privado, zip en entregado-por-claude/efscorm). Entra en el curso demo comercial.
 - 03-10-2026: prototipo 0.1.0 instalado en el 5.2 local; probado como alumno en el curso demo (cm 119, un SCO):
   entra directo, barra + salir, contenido a toda la ventana en 1366×768 y 390×800, el reloj de efreport sale y mide,
   salir vuelve a la sección del curso. Sin repo remoto hasta que Ana confirme el nombre. Sin pruebas automáticas aún.
 
-## 9. Preguntas para Ana (sin decidir)
+## 9. Preguntas para Ana — DECIDIDAS (09-10-2026)
 
-1. **Nombre** (§6): ¿`local_efscorm` aun con la marca SCORM en el nombre técnico, o `local_efplayer` / otro?
-2. **Dónde se activa:** solo en el sitio (como ahora), o también por curso, o por actividad (desactivar en un SCORM
-   concreto). Más niveles = una tabla y un formulario más.
-3. **Tabla de contenidos** en paquetes con varios SCO: ¿se oculta siempre, se deja como la tenga la actividad (hoy),
-   o se ofrece plegada en la barra?
-4. **Actividades en «ventana nueva»:** hoy se dejan como están. ¿Mejor forzarlas a la pantalla completa en la misma
-   pestaña (es lo que arregla la medición) o avisar al administrador?
-5. **Profesores:** el núcleo nunca les salta la página de entrada (para que vean los informes). ¿Lo dejamos así?
-6. **Barra superior:** ¿nombre de la actividad + «Salir» basta, o también «Marcar como completada», siguiente/anterior
-   SCO o un enlace al curso? Colores: azul y naranja de la casa (como el prototipo) o neutros.
-7. **Sin efreport ni eftimeclock:** ¿debe funcionar igual (sí en el prototipo) o avisar de que «con el Pack se mide»?
-   (en el Reloj gratuito ya hay un texto de embudo).
-8. ¿Hay que **documentar una guía** corta (PDF) como en los demás, o basta el README para un plugin gratuito?
+1. **Nombre**: se mantiene `local_efscorm` («Reproductor SCORM directo»): «scorm» describe el formato, como `mod_scorm`.
+2. **Dónde se activa**: solo en el sitio. El nivel por curso, el día que un cliente lo pida.
+3. **Tabla de contenidos**: como la tenga la actividad; el ajuste de sitio «ocultar» sigue, apagado por defecto.
+4. **Actividades en «ventana nueva»**: se fuerzan a la misma pestaña a pantalla completa (ajuste «Actividades en
+   ventana nueva, en la misma pestaña», activado por defecto; se puede desactivar). Técnica (0.2.0): en `view.php`
+   el hook redirige al reproductor del núcleo con `display=popup` (la misma URL que el núcleo abriría en la ventana
+   nueva, construida como `scorm_simple_play()`), y en `player.php` con `display=popup` se sustituye el layout
+   `embedded` por `popup` + barra propia; «Salir» vuelve a la sección del curso (en ese modo el núcleo no pinta
+   botón de salida). Sin la entrada directa, la página de la actividad queda como en el núcleo.
+5. **Profesores**: como el núcleo (página de entrada con los informes).
+6. **Barra superior**: nombre + «Salir de la actividad»; colores neutros (gris oscuro `#1f2937`, blanco).
+7. **Sin efreport ni eftimeclock**: funciona igual; una nota en la página de ajustes del administrador (nunca al alumno).
+8. **Guía**: sí, corta, en `docs/manual/` (la exige `build_zips.py` y la lista el curso Área de cliente).

@@ -13,6 +13,7 @@ on:
     tags: ['v*']
     paths-ignore: ['docs/**', '**.md']
   pull_request:
+    paths-ignore: ['docs/**', '**.md']
   workflow_dispatch:
 
 # Un push nuevo a la misma rama cancela el run anterior todavía en marcha.
@@ -34,7 +35,7 @@ jobs:
     steps:
       - id: pick
         env:
-          FULL: '[{"php":"8.2","moodle-branch":"MOODLE_501_STABLE"},{"php":"8.3","moodle-branch":"MOODLE_502_STABLE","quick":true,"behat":true},{"php":"8.3","moodle-branch":"MOODLE_502_STABLE","db":"pgsql"},{"php":"8.3","moodle-branch":"main","experimental":true,"mariadb":"11.4"}]'
+          FULL: '[{"php":"8.2","moodle-branch":"MOODLE_501_STABLE"},{"php":"8.3","moodle-branch":"MOODLE_502_STABLE","quick":true,"behat":true},{"php":"8.3","moodle-branch":"MOODLE_502_STABLE","db":"pgsql"},{"php":"8.3","moodle-branch":"MOODLE_503_STABLE","mariadb":"11.4"}]'
         run: |
           if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref_type }}" = "branch" ]; then
             echo "include=$(echo "$FULL" | jq -c '[.[] | select(.quick == true)]')" >> "$GITHUB_OUTPUT"
@@ -49,7 +50,7 @@ jobs:
 
     services:
       mariadb:
-        # 5.3 exige MariaDB 11.4: la entrada «main» de la matriz la pide; el resto sigue en 10.11.
+        # 5.3 exige MariaDB 11.4: la entrada MOODLE_503_STABLE de la matriz la pide; el resto sigue en 10.11.
         image: mariadb:${{ matrix.mariadb || '10.11' }}
         env:
           MYSQL_USER: 'root'
@@ -113,6 +114,10 @@ jobs:
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci phpdoc --max-warnings 0
 
+      - name: Mustache Lint
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci mustache
+
       - name: Validate plugin structure
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci validate
@@ -123,4 +128,8 @@ jobs:
 
       - name: PHPUnit tests
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phpunit --fail-on-warning
+        run: moodle-plugin-ci phpunit --fail-on-warning --fail-on-skipped
+
+      - name: Behat features
+        if: ${{ !cancelled() && matrix.behat }}
+        run: moodle-plugin-ci behat --profile chrome --auto-rerun 2

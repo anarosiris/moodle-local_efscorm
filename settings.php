@@ -42,9 +42,20 @@ if ($hassiteconfig) {
         1
     ));
     $settings->add(new admin_setting_configcheckbox(
+        'local_efscorm/samewindow',
+        get_string('setting_samewindow', 'local_efscorm'),
+        get_string('setting_samewindow_desc', 'local_efscorm'),
+        1
+    ));
+    $settings->add(new admin_setting_configcheckbox(
         'local_efscorm/hidetoc',
         get_string('setting_hidetoc', 'local_efscorm'),
         get_string('setting_hidetoc_desc', 'local_efscorm'),
         0
+    ));
+    $settings->add(new admin_setting_heading(
+        'local_efscorm/timetracking',
+        get_string('setting_timetracking', 'local_efscorm'),
+        get_string('setting_timetracking_desc', 'local_efscorm')
     ));
 }

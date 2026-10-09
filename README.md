@@ -8,11 +8,16 @@ Free plugin for Moodle 5.1+ by eLearning Fácil. It changes how SCORM activities
   blocks or footer), a top bar with the activity name and an **Exit activity** button, and the content fills the
   window, with scrollbars when it is larger. It is still the activity page, so time-tracking plugins
   (local_efreport, local_eftimeclock) keep measuring it and show their clock.
-- Activities set to open in a new window are left as they are.
+- **New-window activities in the same tab.** Activities set to open in a new window are shown in that same
+  full-screen player in the current tab (setting on by default): no pop-up blockers, and the time is measured like on
+  any other page. Untick the setting to keep the new window.
 
-Settings: Site administration → Plugins → Local plugins → Direct SCORM player.
+Settings: Site administration → Plugins → Local plugins → Direct SCORM player (full-screen player, direct entry,
+new-window activities in the same tab, hide the table of contents). No data is stored: the plugin has no tables and a
+null privacy provider.
 
-Status: prototype 0.1.0 (ALPHA). Specification and open questions: `docs/SPEC.md`.
+Current version: **0.2.0** — see [CHANGES.md](CHANGES.md). Specification and decisions: `docs/SPEC.md`. Short guide
+(PDF) in `docs/manual/`.
 
 ## Licence
 
