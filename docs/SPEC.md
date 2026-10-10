@@ -92,7 +92,8 @@ marcas en los nombres. Alternativas: `local_efplayer` («Reproductor directo»),
   plegada, 1366×768, 1366×600 y 390 px (el iframe llena el hueco, sin barras de desplazamiento), nombre con `&`,
   actividad aún no abierta (página de la actividad con la fecha), ventana nueva en la misma pestaña, curso de
   actividad única (salir no vuelve al reproductor), `display=popup` a mano, ventana emergente real del profesor sin
-  barra, reloj de efreport presente. 22 comprobaciones el 10-10-2026.
+  barra, reloj de efreport presente. 22 comprobaciones el 10-10-2026. Repetible: `tools/e2e/efscorm_setup.php`
+  (cursos temporales en el 5.3) + `tools/e2e/efscorm_check.js` (pasos en su cabecera).
 
 ## 8. Estado
 
@@ -122,7 +123,7 @@ marcas en los nombres. Alternativas: `local_efplayer` («Reproductor directo»),
 
 ## 10. Revisión externa de la 0.2.0 (10-10-2026) → 0.2.1
 
-Informe en `~/moodle52/envio-a-claude/revision-efscorm-0.2.0.md` (20 hallazgos: 2 altos, 6 medios, 12 menores;
+Informe en `~/moodle52/entregado-por-claude/efscorm/revision-externa-0.2.0.md` (20 hallazgos: 2 altos, 6 medios, 12 menores;
 seguridad: nada explotable). Todos aplicados; las decisiones técnicas que tomé, para no reabrirlas:
 
 - **Marca de la misma pestaña** (hallazgo 3): parámetro `efscormtab=1` en la URL que construye el plugin (sin
