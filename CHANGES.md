@@ -1,5 +1,28 @@
 # Changelog — local_efscorm
 
+## [0.2.1] - 2026-10-10
+
+Revisión externa de la 0.2.0 aplicada (20 hallazgos; seguridad: nada explotable). Verificado en navegador en un sitio
+limpio (5.3, Boost): paquete de 9 SCO con tabla de contenidos, plegada, 1366×768, 1366×600 y móvil.
+- Cursos de formato «actividad única»: «Salir de la actividad» iba en bucle (curso → actividad → reproductor); ahora
+  lleva a la portada del sitio, como hace el núcleo, y se respeta `preventskip=1`.
+- Con la tabla de contenidos visible el contenido perdía un 21 % de ancho (se restaba dos veces); al plegarla no se
+  reajustaba; en ventanas de menos de 730 px de alto sobraba una barra de desplazamiento (alto mínimo de 680 px del
+  núcleo); el panel de navegación entre SCO quedaba fuera de la ventana. El iframe ocupa ahora exactamente el hueco.
+- La ventana emergente de verdad (profesor, o entrada directa apagada) recibía la barra y «Salir» cargaba el curso
+  dentro de la ventana: la URL de la misma pestaña lleva la marca `efscormtab=1` y la ventana real no se toca.
+- `display=popup` escrito a mano en una actividad normal dejaba el layout `embedded` sin salida ni reloj: ahora es
+  pantalla completa como el resto.
+- La entrada directa comprueba la capacidad `mod/scorm:skipview` y las fechas de apertura y cierre, como el núcleo
+  (antes el alumno aterrizaba en un aviso casi tapado por la barra); los avisos del núcleo quedan bajo la barra.
+- Nombre de la actividad con `&` se veía como `&amp;` en la barra.
+- Ajuste «Ocultar la tabla de contenidos» también oculta la tabla «en menú desplegable»; `100dvh` en móvil;
+  salvaguarda contra la recursión de `redirect()` con avisos de depuración; registro de la actividad desde `$PAGE`.
+- Accesibilidad: la barra es un `header` con el nombre en `h1`, `:focus-visible`, botón de 40 px.
+- Textos: el reloj se ve en el reproductor (no «en la barra»); el ajuste principal apagado apaga también la entrada
+  directa; «complemento» en español. Guía: FAQ del contenido recortado corregida; capturas nuevas.
+- `maturity` STABLE. Tests: 8 PHPUnit (47 aserciones) con los casos nuevos; Behat sin depender del texto del paquete.
+
 ## [0.2.0] - 2026-10-10
 
 Primera versión publicable (decisiones de Ana del 09-10 sobre las 8 preguntas del SPEC):

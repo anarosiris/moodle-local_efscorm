@@ -195,8 +195,9 @@
   </table>
 
   <h2><span class="num">5</span>Medir el tiempo de cada SCORM</h2>
-  <p>Este plugin solo cambia cómo se abren los SCORM. Para saber <b>cuánto tiempo pasa cada alumno dentro de
-  cada paquete</b>, eLearning Fácil tiene dos opciones, y las dos muestran su reloj en la barra del reproductor:</p>
+  <p>Este plugin solo cambia cómo se abren los SCORM y funciona igual sin nada más instalado. Para saber
+  <b>cuánto tiempo pasa cada alumno dentro de cada paquete</b>, eLearning Fácil tiene dos opciones, y las dos
+  muestran su reloj dentro del reproductor:</p>
   <div class="grid2">
     <div class="card"><h4>Reloj de tiempo (gratuito)</h4>
       <code>local_eftimeclock</code>: mide el tiempo real en las actividades (solo con la pestaña visible y con
@@ -223,9 +224,8 @@
     <tr><td>Se instala y se desinstala sin dejar rastro: no tiene tablas ni guarda datos personales.</td>
         <td>No cambia la configuración de ninguna actividad.</td></tr>
   </table>
-  <p>Es software libre (GPL v3) y cumple los requisitos técnicos del directorio de plugins de Moodle: sin
-  llamadas externas, sin recursos de terceros, proveedor de privacidad declarado, pruebas automáticas y
-  revisión de código en cada versión.</p>
+  <p>Software libre (GPL v3), listo para el directorio de plugins de Moodle: sin llamadas externas ni recursos
+  de terceros, proveedor de privacidad declarado, pruebas automáticas y revisión de código en cada versión.</p>
 
   <h2><span class="num">7</span>Preguntas frecuentes</h2>
   <h3>Un profesor dice que a él no le entra directo</h3>
@@ -234,14 +234,17 @@
   <h3>Quiero que una actividad concreta se abra en ventana nueva de verdad</h3>
   <p>Desmarca «Actividades en ventana nueva, en la misma pestaña»: todas las actividades configuradas así
   vuelven a abrir su ventana. El ajuste es de sitio.</p>
-  <h3>El contenido se ve recortado</h3>
-  <p>El reproductor da al paquete toda la ventana y pone barras de desplazamiento si es más grande. Si aun así
-  se corta, el paquete fija un tamaño propio por dentro: ajusta sus dimensiones en la actividad (ancho y alto).</p>
-  <h3>¿Funciona sin el Pack ni el Reloj?</h3>
-  <p>Sí, igual; solo que no habrá reloj en la barra ni medición del tiempo.</p>
+  <h3>El contenido se ve recortado o no llena la ventana</h3>
+  <p>El reproductor da al paquete toda la ventana (menos la barra y, si la actividad los muestra, la tabla de
+  contenidos y el panel de navegación) y pone barras de desplazamiento si es más grande. Si aun así se corta, el
+  tamaño lo fija el propio paquete (el ancho y el alto de la actividad solo valen para la ventana nueva). Si el
+  tema llevaba CSS propio para el reproductor SCORM, retíralo: gana sobre el del plugin.</p>
+  <h3>El botón «Cerrar» del propio paquete no hace nada</h3>
+  <p>Intenta cerrar una ventana que no existe: en la pestaña actual se sale con <b>Salir de la actividad</b>, que
+  cierra y guarda el SCORM igual.</p>
 
   <hr class="s">
-  <p class="small">Guía del plugin <code>local_efscorm</code> · versión 0.2.0 · © 2026 eLearning
+  <p class="small">Guía del plugin <code>local_efscorm</code> · versión 0.2.1 · © 2026 eLearning
   Fácil · https://elearningfacil.com</p>
 <hr class="s">
 <p class="small">Moodle™ es una marca registrada de Moodle Pty Ltd. SCORM® es una marca registrada de Advanced Distributed Learning (ADL). eLearning Fácil no está vinculada, asociada ni respaldada por ninguna de ellas; los nombres se citan únicamente para describir la compatibilidad de nuestros productos.</p>

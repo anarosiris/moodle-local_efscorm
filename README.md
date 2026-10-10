@@ -16,7 +16,7 @@ Settings: Site administration → Plugins → Local plugins → Direct SCORM pla
 new-window activities in the same tab, hide the table of contents). No data is stored: the plugin has no tables and a
 null privacy provider.
 
-Current version: **0.2.0** — see [CHANGES.md](CHANGES.md). Specification and decisions: `docs/SPEC.md`. Short guide
+Current version: **0.2.1** — see [CHANGES.md](CHANGES.md). Specification and decisions: `docs/SPEC.md`. Short guide
 (PDF) in `docs/manual/`.
 
 ## Licence

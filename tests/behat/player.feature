@@ -24,7 +24,7 @@ Feature: Direct SCORM player
   Scenario: A student opening the activity lands on the player
     Given I am on the "Package" "scorm activity" page logged in as student1
     Then I should be on the SCORM player page
-    And I should not see "Enter" in the "region-main" "region"
+    And "Enter" "button" should not exist
 
   Scenario: A teacher keeps the activity page with the Enter button
     Given I am on the "Package" "scorm activity" page logged in as teacher1
