@@ -22,6 +22,7 @@
   }
   @page cover{ margin:0; @bottom-center{content:""} @bottom-right{content:""} }
   @page :first{ margin:0; }
+  a{ color:var(--teal-d); text-decoration:none; }
 
   *{box-sizing:border-box;}
   body{ font-family:'Lato'; color:var(--ink); font-size:10.5pt; line-height:1.5; margin:0; }
@@ -30,19 +31,36 @@
   b,strong{ font-weight:700; }
   code{ font-family:'Lato'; background:var(--teal-l); color:var(--teal-d); padding:1px 5px; border-radius:4px; font-size:9.5pt; font-weight:700; }
 
-  .cover{ page:cover; height:297mm; background:var(--teal); color:#fff; position:relative; overflow:hidden; }
+  /* Portada clara (sistema de marca): fondo blanco, círculo crema, logo sin caja y enlazado */
+  .cover{ page:cover; height:297mm; background:#fff; color:var(--ink); position:relative; overflow:hidden; }
   .cover .blob{ position:absolute; border-radius:50%; }
-  .cover .b1{ width:420mm; height:420mm; right:-230mm; top:-150mm; background:var(--teal-d); opacity:.55; }
-  .cover .b2{ width:120mm; height:120mm; left:-50mm; bottom:-40mm; background:var(--orange); opacity:.9; }
-  .cover-inner{ position:absolute; inset:0; padding:34mm 24mm; display:flex; flex-direction:column; }
-  .logo-card{ background:#fff; border-radius:14px; padding:12mm 14mm; width:96mm; box-shadow:0 10px 30px rgba(0,0,0,.18); }
-  .logo-card img{ width:100%; display:block; }
-  .cover h1{ color:#fff; font-size:34pt; font-weight:700; margin-top:auto; line-height:1.1; }
-  .cover .sub{ font-family:'Poppins'; font-weight:500; font-size:15pt; color:#bff0f0; margin-top:4mm; }
-  .cover .tag{ display:inline-block; background:var(--orange); color:#fff; font-family:'Poppins'; font-weight:600;
-    font-size:10pt; padding:4px 14px; border-radius:30px; margin-top:8mm; }
-  .cover .ver{ margin-top:6mm; font-family:'Poppins'; font-weight:500; font-size:10pt; color:#dffafa; }
-
+  .cover .b1{ width:170mm; height:170mm; right:-60mm; top:-70mm; background:#fff3d2; }
+  .cover .b2{ width:110mm; height:110mm; left:-45mm; bottom:-40mm; background:var(--teal-l); }
+  .cover-inner{ position:absolute; inset:0; padding:22mm 22mm 20mm; display:flex; flex-direction:column; }
+  .cover .logo{ width:72mm; display:block; }
+  .cover .eyebrow{ margin-top:46mm; font-family:'Poppins'; font-weight:700; font-size:10pt; letter-spacing:2.5px; color:#a85400; text-transform:uppercase; }
+  .cover h1{ color:#1a1a1a; font-size:40pt; font-weight:700; margin:3mm 0 0; line-height:1.05; }
+  .cover .sub{ font-family:'Poppins'; font-weight:600; font-size:15pt; color:#1a1a1a; margin-top:5mm; }
+  .cover .sub u{ text-decoration:none; background:#fec93f; padding:0 2mm; border-radius:4px; }
+  .cover .tag{ display:inline-block; background:var(--orange); color:#1a1a1a; font-family:'Poppins'; font-weight:700;
+    font-size:10pt; padding:4px 14px; border-radius:30px; margin-top:8mm; align-self:flex-start; }
+  .cover .ver{ margin-top:4mm; font-family:'Poppins'; font-weight:500; font-size:10pt; color:var(--muted); }
+  .by{ margin-top:auto; background:#fff3d2; border-radius:14px; padding:7mm 8mm; display:flex; gap:7mm; align-items:center; }
+  .by img{ width:22mm; height:22mm; border-radius:6mm; }
+  .by .k{ font-family:'Poppins'; font-weight:700; font-size:9pt; letter-spacing:1.5px; color:#a85400; text-transform:uppercase; }
+  .by p{ margin:1mm 0 0; font-size:10.5pt; }
+  .by a{ font-family:'Poppins'; font-weight:700; color:var(--teal-d); }
+  /* índice: cada fila es un enlace y el número de página sale solo */
+  .toc a.row{ color:inherit; }
+  .toc a.row::after{ content:target-counter(attr(href url), page); margin-left:auto; font-family:'Poppins'; font-weight:600; color:var(--teal); }
+  /* promo final */
+  .promo{ display:flex; flex-wrap:wrap; gap:5mm; margin-top:4mm; }
+  .promo a{ width:calc(50% - 2.5mm); display:flex; gap:4mm; align-items:flex-start; background:#f6fbfb; border:1px solid var(--line); border-radius:10px; padding:4.5mm; color:var(--ink); break-inside:avoid; }
+  .promo img{ width:16mm; height:16mm; flex:none; }
+  .promo b{ display:block; font-family:'Poppins'; color:var(--teal-d); font-size:11pt; margin-bottom:1mm; }
+  .promo span{ font-size:9.5pt; line-height:1.4; }
+  .cta{ margin-top:7mm; background:#fff3d2; border-radius:12px; padding:6mm 7mm; text-align:center; }
+  .cta a{ display:inline-block; margin-top:3mm; background:var(--orange); color:#1a1a1a; font-family:'Poppins'; font-weight:700; border-radius:30px; padding:3mm 8mm; }
   .part{ page-break-before:always; }
   .partbar{ background:linear-gradient(90deg,var(--teal),var(--teal-d)); color:#fff; border-radius:12px;
     padding:7mm 9mm; margin-bottom:7mm; }
@@ -103,11 +121,19 @@
   <div class="blob b1"></div>
   <div class="blob b2"></div>
   <div class="cover-inner">
-    <div class="logo-card"><img src="logo.png" alt="eLearning Fácil"></div>
+    <a href="https://elearningfacil.com"><img class="logo" src="logo_horizontal.png" alt="eLearning Fácil"></a>
+    <div class="eyebrow">Plugin gratuito para Moodle™</div>
     <h1>Reproductor SCORM directo</h1>
-    <div class="sub">Guía del plugin gratuito que abre los SCORM a pantalla completa</div>
-    <div class="tag">Plugin gratuito · local_efscorm</div>
-    <div class="ver">Versión 0.2.0 · Compatible con Moodle 5.1 a 5.3</div>
+    <div class="sub">Un clic y el estudiante <u>ya está dentro del SCORM.</u></div>
+    <div class="tag">Guía del plugin · local_efscorm</div>
+    <div class="ver">Versión 0.2.1 · Compatible con Moodle™ 5.1, 5.2 y 5.3</div>
+    <div class="by">
+      <img src="direct-scorm-player_512.png" alt="">
+      <div><div class="k">Desarrollado por eLearning Fácil</div>
+        <p>Plugins para Moodle™ que ahorran trabajo a centros de formación y empresas: seguimiento del tiempo,
+        informes, certificados y gestión de alumnos.</p>
+        <p><a href="https://elearningfacil.com">elearningfacil.com</a> · info@elearningfacil.com</p></div>
+    </div>
   </div>
 </section>
 
@@ -116,14 +142,15 @@
   <div class="partbar"><div class="k">Contenido</div><h1>Índice</h1></div>
   <div class="toc">
     <div class="grp">Guía</div>
-    <div class="row"><span class="tt">1. ¿Qué es y para qué sirve?</span><span class="pg">3</span></div>
-    <div class="row"><span class="tt">2. Instalación</span><span class="pg">3</span></div>
-    <div class="row"><span class="tt">3. Lo que ve el alumno</span><span class="pg">4</span></div>
-    <div class="row"><span class="tt">4. Ajustes</span><span class="pg">6</span></div>
-    <div class="row"><span class="tt">5. Medir el tiempo de cada SCORM</span><span class="pg">6</span></div>
+    <a class="row" href="#s1"><span class="tt">1. ¿Qué es y para qué sirve?</span></a>
+    <a class="row" href="#s2"><span class="tt">2. Instalación</span></a>
+    <a class="row" href="#s3"><span class="tt">3. Lo que ve el alumno</span></a>
+    <a class="row" href="#s4"><span class="tt">4. Ajustes</span></a>
+    <a class="row" href="#s5"><span class="tt">5. Medir el tiempo de cada SCORM</span></a>
     <div class="grp">Referencia</div>
-    <div class="row"><span class="tt">6. Qué toca y qué no</span><span class="pg">8</span></div>
-    <div class="row"><span class="tt">7. Preguntas frecuentes</span><span class="pg">8</span></div>
+    <a class="row" href="#s6"><span class="tt">6. Qué toca y qué no</span></a>
+    <a class="row" href="#s7"><span class="tt">7. Preguntas frecuentes</span></a>
+    <a class="row" href="#s8"><span class="tt">Otros plugins de eLearning Fácil</span></a>
   </div>
 </section>
 
@@ -132,7 +159,7 @@
   <div class="partbar"><div class="k">Guía</div><h1>El reproductor directo</h1>
     <p>El alumno pulsa la actividad y ya está dentro del contenido, a pantalla completa, sin ventanas nuevas.</p></div>
 
-  <h2><span class="num">1</span>¿Qué es y para qué sirve?</h2>
+  <h2 id="s1"><span class="num">1</span>¿Qué es y para qué sirve?</h2>
   <p class="lead">El <b>Reproductor SCORM directo</b> cambia cómo se abren las actividades SCORM de Moodle,
   sin tocar el módulo SCORM ni los paquetes: el estudiante entra directamente en el contenido y lo ve
   a toda la ventana, con una barra superior y un botón para salir.</p>
@@ -143,12 +170,14 @@
     <li><b>Sin ventanas nuevas</b>: las actividades configuradas «en ventana nueva» se abren también en la
       pestaña actual, así los bloqueadores de ventanas emergentes dejan de dar problemas.</li>
     <li><b>Sigue siendo la página de la actividad</b>: los plugins que miden el tiempo (el del Pack
-      Formación Bonificada Pro o el Reloj gratuito) la miden como cualquier otra y muestran su reloj.</li>
+      Formación Bonificada Pro o el Medidor de tiempo real gratuito) la miden como cualquier otra y muestran su reloj.</li>
     <li><b>Vale con cualquier tema</b> basado en Boost y no guarda ningún dato.</li>
   </ul>
 
-  <h2><span class="num">2</span>Instalación</h2>
+  <h2 id="s2"><span class="num">2</span>Instalación</h2>
   <ol class="steps">
+    <li><b>Haz una copia de seguridad antes de instalar</b>: base de datos, carpeta moodledata y código. Es lo
+      recomendable con cualquier plugin, aunque este no crea tablas ni toca datos.</li>
     <li><b>Administración del sitio → Extensiones → Instalar complementos</b>: sube el ZIP y confirma.</li>
     <li>Listo: por defecto está <b>activado en todo el sitio</b>. Los ajustes están en
       <b>Administración del sitio → Extensiones → Complementos locales → Reproductor SCORM directo</b>.</li>
@@ -162,7 +191,7 @@
 
 <!-- 3 -->
 <section class="part">
-  <h2><span class="num">3</span>Lo que ve el alumno</h2>
+  <h2 id="s3"><span class="num">3</span>Lo que ve el alumno</h2>
   <p>Al pulsar la actividad, el contenido ocupa toda la ventana bajo una barra con el nombre de la actividad y
   el botón <b>Salir de la actividad</b>, que devuelve al alumno a la sección del curso (y cierra y guarda el
   SCORM como siempre).</p>
@@ -183,7 +212,7 @@
 
 <!-- 4-5 -->
 <section class="part">
-  <h2><span class="num">4</span>Ajustes</h2>
+  <h2 id="s4"><span class="num">4</span>Ajustes</h2>
   <p>En <b>Administración del sitio → Extensiones → Complementos locales → Reproductor SCORM directo</b>.</p>
   <img class="shot" src="efscorm_settings.png" alt="Página de ajustes del plugin">
   <table>
@@ -194,12 +223,12 @@
     <tr><td><b>Ocultar la tabla de contenidos</b></td><td>No</td><td>En el reproductor, oculta la tabla de contenidos del SCORM aunque la actividad la muestre.</td></tr>
   </table>
 
-  <h2><span class="num">5</span>Medir el tiempo de cada SCORM</h2>
+  <h2 id="s5"><span class="num">5</span>Medir el tiempo de cada SCORM</h2>
   <p>Este plugin solo cambia cómo se abren los SCORM y funciona igual sin nada más instalado. Para saber
   <b>cuánto tiempo pasa cada alumno dentro de cada paquete</b>, eLearning Fácil tiene dos opciones, y las dos
   muestran su reloj dentro del reproductor:</p>
   <div class="grid2">
-    <div class="card"><h4>Reloj de tiempo (gratuito)</h4>
+    <div class="card"><h4>Medidor de tiempo real (gratuito)</h4>
       <code>local_eftimeclock</code>: mide el tiempo real en las actividades (solo con la pestaña visible y con
       foco), con informe por curso y descargas Excel y CSV.</div>
     <div class="card"><h4>Pack Formación Bonificada Pro</h4>
@@ -214,7 +243,7 @@
 
 <!-- 6-7 -->
 <section class="part">
-  <h2><span class="num">6</span>Qué toca y qué no</h2>
+  <h2 id="s6"><span class="num">6</span>Qué toca y qué no</h2>
   <table>
     <tr><th>Sí</th><th>No</th></tr>
     <tr><td>Envía al estudiante al reproductor del propio Moodle, como hace «Omitir la página de estructura: Siempre».</td>
@@ -227,7 +256,7 @@
   <p>Software libre (GPL v3), listo para el directorio de plugins de Moodle: sin llamadas externas ni recursos
   de terceros, proveedor de privacidad declarado, pruebas automáticas y revisión de código en cada versión.</p>
 
-  <h2><span class="num">7</span>Preguntas frecuentes</h2>
+  <h2 id="s7"><span class="num">7</span>Preguntas frecuentes</h2>
   <h3>Un profesor dice que a él no le entra directo</h3>
   <p>Es lo esperado: quien puede ver los informes de la actividad conserva la página de entrada, con el botón
   «Entrar» y los enlaces a informes. Para ver lo mismo que el alumno, <b>Cambiar rol a… → Estudiante</b>.</p>
@@ -243,11 +272,28 @@
   <p>Intenta cerrar una ventana que no existe: en la pestaña actual se sale con <b>Salir de la actividad</b>, que
   cierra y guarda el SCORM igual.</p>
 
+</section>
+
+<!-- 8 -->
+<section class="part">
+  <div class="partbar"><div class="k">eLearning Fácil</div><h1 id="s8">Otros plugins de eLearning Fácil</h1>
+    <p>Hechos para centros de formación, empresas y academias que trabajan con Moodle™.</p></div>
+  <div class="promo">
+    <a href="https://elearningfacil.com"><img src="pack_512.png" alt=""><div><b>Pack Formación Bonificada Pro</b><span>Tus cursos bonificados se justifican solos: tiempo real, tutoría con fecha, controles y el expediente de cada grupo para FUNDAE®.</span></div></a>
+    <a href="https://elearningfacil.com"><img src="class-manager_512.png" alt=""><div><b>Gestor de Aula</b><span>Vende cursos por plazas: tu cliente da de alta a su gente, con tope de plazas, tiempo de acceso y bienvenida automática.</span></div></a>
+    <a href="https://elearningfacil.com"><img src="bulk-certificate_512.png" alt=""><div><b>Gestor masivo de certificados</b><span>Filtra, emite y descarga en un zip los certificados de todo un grupo, con Custom certificate o los de Workplace.</span></div></a>
+    <a href="https://elearningfacil.com"><img src="active-time-clock_512.png" alt=""><div><b>Medidor de tiempo real</b><span>Gratis: mide el tiempo de verdad de cada estudiante, solo con la pestaña activa, con informe en Excel y CSV.</span></div></a>
+  </div>
+  <div class="cta"><b style="font-family:'Poppins';font-size:13pt;">¿Quieres saber más?</b><br>
+    Escríbenos y te contamos cuál encaja con tu Moodle™.<br>
+    <a href="https://elearningfacil.com">elearningfacil.com</a>
+    <p class="small" style="margin-top:3mm;">info@elearningfacil.com · WhatsApp +34 647 002 997</p></div>
+
   <hr class="s">
   <p class="small">Guía del plugin <code>local_efscorm</code> · versión 0.2.1 · © 2026 eLearning
-  Fácil · https://elearningfacil.com</p>
+  Fácil · <a href="https://elearningfacil.com">elearningfacil.com</a></p>
 <hr class="s">
-<p class="small">Moodle™ es una marca registrada de Moodle Pty Ltd. SCORM® es una marca registrada de Advanced Distributed Learning (ADL). eLearning Fácil no está vinculada, asociada ni respaldada por ninguna de ellas; los nombres se citan únicamente para describir la compatibilidad de nuestros productos.</p>
+<p class="small">Moodle™ es una marca registrada de Moodle Pty Ltd. FUNDAE® es marca registrada de la Fundación Estatal para la Formación en el Empleo. SCORM® es una marca registrada de Advanced Distributed Learning (ADL). eLearning Fácil no está vinculada, asociada ni respaldada por ninguna de ellas; los nombres se citan únicamente para describir la compatibilidad de nuestros productos.</p>
 </section>
 
 </body>

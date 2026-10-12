@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family:'Poppins'; src:url('fonts/Poppins-Regular.ttf'); font-weight:400; }
+  @font-face { font-family:'Poppins'; src:url('fonts/Poppins-Medium.ttf'); font-weight:500; }
+  @font-face { font-family:'Poppins'; src:url('fonts/Poppins-SemiBold.ttf'); font-weight:600; }
+  @font-face { font-family:'Poppins'; src:url('fonts/Poppins-Bold.ttf'); font-weight:700; }
+  @font-face { font-family:'Lato'; src:url('fonts/Lato-Regular.ttf'); font-weight:400; }
+  @font-face { font-family:'Lato'; src:url('fonts/Lato-Bold.ttf'); font-weight:700; }
+
+  :root{
+    --teal:#009b9b; --teal-d:#00787a; --teal-l:#e6f5f5; --teal-l2:#d2ecec;
+    --orange:#F39200; --orange-l:#fff3e0; --orange-d:#c9760a;
+    --ink:#2d3a3a; --muted:#6c7a7a; --line:#dfeaea;
+  }
+  @page{
+    size:A4; margin:18mm 16mm 16mm 16mm;
+    @bottom-center{ content:"eLearning Fácil  ·  elearningfacil.com"; font-family:'Lato'; font-size:8pt; color:#9fb0b0; }
+    @bottom-right{ content:counter(page); font-family:'Poppins'; font-weight:600; font-size:9pt; color:var(--teal); }
+  }
+  @page cover{ margin:0; @bottom-center{content:""} @bottom-right{content:""} }
+  @page :first{ margin:0; }
+  a{ color:var(--teal-d); text-decoration:none; }
+
+  *{box-sizing:border-box;}
+  body{ font-family:'Lato'; color:var(--ink); font-size:10.5pt; line-height:1.5; margin:0; }
+  h1,h2,h3,h4{ font-family:'Poppins'; color:var(--teal-d); margin:0 0 .3em; line-height:1.2; }
+  p{ margin:0 0 .6em; }
+  b,strong{ font-weight:700; }
+  code{ font-family:'Lato'; background:var(--teal-l); color:var(--teal-d); padding:1px 5px; border-radius:4px; font-size:9.5pt; font-weight:700; }
+
+  /* Portada clara (sistema de marca): fondo blanco, círculo crema, logo sin caja y enlazado */
+  .cover{ page:cover; height:297mm; background:#fff; color:var(--ink); position:relative; overflow:hidden; }
+  .cover .blob{ position:absolute; border-radius:50%; }
+  .cover .b1{ width:170mm; height:170mm; right:-60mm; top:-70mm; background:#fff3d2; }
+  .cover .b2{ width:110mm; height:110mm; left:-45mm; bottom:-40mm; background:var(--teal-l); }
+  .cover-inner{ position:absolute; inset:0; padding:22mm 22mm 20mm; display:flex; flex-direction:column; }
+  .cover .logo{ width:72mm; display:block; }
+  .cover .eyebrow{ margin-top:46mm; font-family:'Poppins'; font-weight:700; font-size:10pt; letter-spacing:2.5px; color:#a85400; text-transform:uppercase; }
+  .cover h1{ color:#1a1a1a; font-size:40pt; font-weight:700; margin:3mm 0 0; line-height:1.05; }
+  .cover .sub{ font-family:'Poppins'; font-weight:600; font-size:15pt; color:#1a1a1a; margin-top:5mm; }
+  .cover .sub u{ text-decoration:none; background:#fec93f; padding:0 2mm; border-radius:4px; }
+  .cover .tag{ display:inline-block; background:var(--orange); color:#1a1a1a; font-family:'Poppins'; font-weight:700;
+    font-size:10pt; padding:4px 14px; border-radius:30px; margin-top:8mm; align-self:flex-start; }
+  .cover .ver{ margin-top:4mm; font-family:'Poppins'; font-weight:500; font-size:10pt; color:var(--muted); }
+  .by{ margin-top:auto; background:#fff3d2; border-radius:14px; padding:7mm 8mm; display:flex; gap:7mm; align-items:center; }
+  .by img{ width:22mm; height:22mm; border-radius:6mm; }
+  .by .k{ font-family:'Poppins'; font-weight:700; font-size:9pt; letter-spacing:1.5px; color:#a85400; text-transform:uppercase; }
+  .by p{ margin:1mm 0 0; font-size:10.5pt; }
+  .by a{ font-family:'Poppins'; font-weight:700; color:var(--teal-d); }
+  /* índice: cada fila es un enlace y el número de página sale solo */
+  .toc a.row{ color:inherit; }
+  .toc a.row::after{ content:target-counter(attr(href url), page); margin-left:auto; font-family:'Poppins'; font-weight:600; color:var(--teal); }
+  /* promo final */
+  .promo{ display:flex; flex-wrap:wrap; gap:5mm; margin-top:4mm; }
+  .promo a{ width:calc(50% - 2.5mm); display:flex; gap:4mm; align-items:flex-start; background:#f6fbfb; border:1px solid var(--line); border-radius:10px; padding:4.5mm; color:var(--ink); break-inside:avoid; }
+  .promo img{ width:16mm; height:16mm; flex:none; }
+  .promo b{ display:block; font-family:'Poppins'; color:var(--teal-d); font-size:11pt; margin-bottom:1mm; }
+  .promo span{ font-size:9.5pt; line-height:1.4; }
+  .cta{ margin-top:7mm; background:#fff3d2; border-radius:12px; padding:6mm 7mm; text-align:center; }
+  .cta a{ display:inline-block; margin-top:3mm; background:var(--orange); color:#1a1a1a; font-family:'Poppins'; font-weight:700; border-radius:30px; padding:3mm 8mm; }
+  .part{ page-break-before:always; }
+  .partbar{ background:linear-gradient(90deg,var(--teal),var(--teal-d)); color:#fff; border-radius:12px;
+    padding:7mm 9mm; margin-bottom:7mm; }
+  .partbar .k{ font-family:'Poppins'; font-weight:600; font-size:10pt; letter-spacing:2px; color:#bff0f0; text-transform:uppercase; }
+  .partbar h1{ color:#fff; font-size:23pt; margin:2mm 0 0; }
+  .partbar p{ margin:2mm 0 0; color:#d6f5f5; font-size:10.5pt; }
+
+  h2{ font-size:15.5pt; margin-top:8mm; padding-bottom:2mm; border-bottom:2px solid var(--teal-l2); }
+  .num{ display:inline-block; min-width:8mm; height:8mm; line-height:8mm; text-align:center; background:var(--orange);
+    color:#fff; border-radius:50%; font-family:'Poppins'; font-weight:700; font-size:11pt; margin-right:3mm; }
+  h3{ font-size:12.5pt; color:var(--teal); margin-top:5mm; }
+
+  .box{ border-radius:10px; padding:5mm 6mm; margin:4mm 0; break-inside:avoid; font-size:10pt; }
+  .box .h{ font-family:'Poppins'; font-weight:600; font-size:9.5pt; letter-spacing:.5px; text-transform:uppercase; margin-bottom:1.5mm; }
+  .tip{ background:var(--orange-l); border-left:5px solid var(--orange); }
+  .tip .h{ color:var(--orange-d); }
+  .ok{ background:var(--teal-l); border-left:5px solid var(--teal); }
+  .ok .h{ color:var(--teal-d); }
+
+  ol.steps{ counter-reset:s; list-style:none; padding:0; margin:3mm 0; }
+  ol.steps>li{ position:relative; padding:0 0 4mm 12mm; break-inside:avoid; }
+  ol.steps>li:before{ counter-increment:s; content:counter(s); position:absolute; left:0; top:-1mm;
+    width:8mm; height:8mm; line-height:8mm; text-align:center; background:var(--teal); color:#fff;
+    border-radius:50%; font-family:'Poppins'; font-weight:700; font-size:10pt; }
+
+  ul.tick{ list-style:none; padding-left:0; margin:2mm 0; }
+  ul.tick li{ padding-left:7mm; position:relative; margin-bottom:2mm; }
+  ul.tick li:before{ content:""; position:absolute; left:0; top:2mm; width:3.2mm; height:3.2mm; background:var(--orange); border-radius:50%; }
+
+  table{ width:100%; border-collapse:collapse; margin:3mm 0; font-size:9.5pt; break-inside:avoid; }
+  th{ background:var(--teal); color:#fff; font-family:'Poppins'; font-weight:600; text-align:left; padding:3mm 3mm; }
+  td{ border-bottom:1px solid var(--line); padding:2.6mm 3mm; vertical-align:top; }
+  tr:nth-child(even) td{ background:#f6fbfb; }
+
+  .toc{ margin-top:4mm; }
+  .toc .row{ display:flex; align-items:baseline; border-bottom:1px dotted var(--line); padding:2.4mm 0; }
+  .toc .row .tt{ font-family:'Poppins'; font-weight:500; color:var(--ink); }
+  .toc .row .pg{ margin-left:auto; font-family:'Poppins'; font-weight:600; color:var(--teal); }
+  .toc .grp{ font-family:'Poppins'; font-weight:700; color:var(--orange-d); margin:6mm 0 1mm; font-size:11pt; letter-spacing:.5px; }
+
+  .lead{ font-size:11.5pt; color:var(--muted); }
+  .grid2{ display:flex; gap:6mm; }
+  .grid2>div{ flex:1; }
+  .card{ background:#f6fbfb; border:1px solid var(--line); border-radius:10px; padding:5mm; break-inside:avoid; }
+  .card h4{ font-size:11pt; color:var(--teal); margin-bottom:2mm; }
+  hr.s{ border:none; border-top:1px solid var(--line); margin:6mm 0; }
+  .small{ font-size:9pt; color:var(--muted); }
+  .shot{ display:block; width:100%; max-width:150mm; border:1px solid var(--line); border-radius:8px;
+    box-shadow:0 4px 14px rgba(0,0,0,.08); margin:4mm auto; break-inside:avoid; }
+  .shot.movil{ max-width:52mm; }
+  .shotcap{ text-align:center; font-size:8.5pt; color:var(--muted); margin:-2mm 0 4mm; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<section class="cover">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="cover-inner">
+    <a href="https://elearningfacil.com"><img class="logo" src="logo_horizontal.png" alt="eLearning Fácil"></a>
+    <div class="eyebrow">Free plugin for Moodle™</div>
+    <h1>Direct SCORM player</h1>
+    <div class="sub">One click and the student <u>is right inside the SCORM.</u></div>
+    <div class="tag">Plugin guide · local_efscorm</div>
+    <div class="ver">Version 0.2.1 · Works with Moodle™ 5.1, 5.2 and 5.3</div>
+    <div class="by">
+      <img src="direct-scorm-player_512.png" alt="">
+      <div><div class="k">Developed by eLearning Fácil</div>
+        <p>Moodle™ plugins that save time for training providers and companies: time tracking, reports,
+        certificates and student management.</p>
+        <p><a href="https://elearningfacil.com">elearningfacil.com</a> · info@elearningfacil.com</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENTS -->
+<section class="part">
+  <div class="partbar"><div class="k">Contents</div><h1>Table of contents</h1></div>
+  <div class="toc">
+    <div class="grp">Guide</div>
+    <a class="row" href="#s1"><span class="tt">1. What it is and what it is for</span></a>
+    <a class="row" href="#s2"><span class="tt">2. Installation</span></a>
+    <a class="row" href="#s3"><span class="tt">3. What the student sees</span></a>
+    <a class="row" href="#s4"><span class="tt">4. Settings</span></a>
+    <a class="row" href="#s5"><span class="tt">5. Measuring the time in each SCORM</span></a>
+    <div class="grp">Reference</div>
+    <a class="row" href="#s6"><span class="tt">6. What it changes and what it doesn’t</span></a>
+    <a class="row" href="#s7"><span class="tt">7. Frequently asked questions</span></a>
+    <a class="row" href="#s8"><span class="tt">More plugins by eLearning Fácil</span></a>
+  </div>
+</section>
+
+<!-- 1-2 -->
+<section class="part">
+  <div class="partbar"><div class="k">Guide</div><h1>The direct player</h1>
+    <p>The student clicks the activity and is straight into the content, full screen, with no new windows.</p></div>
+
+  <h2 id="s1"><span class="num">1</span>What it is and what it is for</h2>
+  <p class="lead"><b>Direct SCORM player</b> changes how Moodle™ opens SCORM activities, without touching the SCORM
+  module or the packages: the student goes straight into the content and sees it across the whole window, with a
+  top bar and an exit button.</p>
+  <ul class="tick">
+    <li><b>No “Enter” page</b>: one click on the activity and the content is in front of them.</li>
+    <li><b>Full screen in the same tab</b>: no navigation bar, drawers or theme footer; if the package is larger
+      than the window, scrollbars appear.</li>
+    <li><b>No new windows</b>: activities set to open “in a new window” also open in the current tab, so pop-up
+      blockers stop getting in the way.</li>
+    <li><b>Still the activity page</b>: time-tracking plugins (such as the free Active Time Clock) measure it like
+      any other page and show their clock.</li>
+    <li><b>Works with any Boost-based theme</b> and stores no data.</li>
+  </ul>
+
+  <h2 id="s2"><span class="num">2</span>Installation</h2>
+  <ol class="steps">
+    <li><b>Back up your site before installing</b>: database, moodledata folder and code. It is good practice with
+      any plugin, even though this one creates no tables and touches no data.</li>
+    <li><b>Site administration → Plugins → Install plugins</b>: upload the ZIP and confirm.</li>
+    <li>Done: it is <b>enabled site-wide</b> by default. Settings are in
+      <b>Site administration → Plugins → Local plugins → Direct SCORM player</b>.</li>
+    <li>Check with a student account that clicking a SCORM goes straight in (teachers still see the normal
+      activity page, with the reports).</li>
+  </ol>
+  <div class="box tip"><div class="h">Nothing to set up per activity</div>
+    You don’t need to change “Skip content structure page” or the display mode of each SCORM: the plugin handles
+    every activity on the site.</div>
+</section>
+
+<!-- 3 -->
+<section class="part">
+  <h2 id="s3"><span class="num">3</span>What the student sees</h2>
+  <p>When they click the activity, the content fills the window under a bar with the activity name and the
+  <b>Exit activity</b> button, which takes the student back to the course section (and closes and saves the SCORM
+  as usual).</p>
+  <img class="shot" src="en_player.png" alt="SCORM in full screen with the top bar and the exit button">
+  <div class="shotcap">A neutral top bar (it works with any theme) and the content across the whole window.</div>
+  <img class="shot movil" src="en_player_mobile.png" alt="The same SCORM on a phone">
+  <div class="shotcap">On a phone, the same: bar, content and scrolling if the package doesn’t fit.</div>
+  <ul class="tick">
+    <li>The <b>table of contents</b> of multi-part packages is shown or hidden as the activity has it (there is a
+      setting to always hide it).</li>
+    <li>If the activity was set to open “in a new window”, the student still sees it in the current tab (setting
+      “New-window activities in the same tab”, on by default).</li>
+    <li><b>Teachers</b> and anyone who can view the reports keep the normal activity page, with the “Enter” button
+      and the report links, just as Moodle™ does.</li>
+  </ul>
+</section>
+
+<!-- 4-5 -->
+<section class="part">
+  <h2 id="s4"><span class="num">4</span>Settings</h2>
+  <p>In <b>Site administration → Plugins → Local plugins → Direct SCORM player</b>.</p>
+  <img class="shot" src="en_settings.png" alt="The plugin settings page">
+  <table>
+    <tr><th>Setting</th><th>Default</th><th>What it does</th></tr>
+    <tr><td><b>Full-screen player</b></td><td>Yes</td><td>Shows the SCORM across the whole window with the top bar and the exit button. When off, the plugin does nothing.</td></tr>
+    <tr><td><b>Direct entry</b></td><td>Yes</td><td>The student enters the content without the “Enter” page.</td></tr>
+    <tr><td><b>New-window activities in the same tab</b></td><td>Yes</td><td>Activities set to open “in a new window” open full screen in the current tab. Untick it to keep the new window for those activities.</td></tr>
+    <tr><td><b>Hide the table of contents</b></td><td>No</td><td>In the player, hides the SCORM table of contents even if the activity shows it.</td></tr>
+  </table>
+
+  <h2 id="s5"><span class="num">5</span>Measuring the time in each SCORM</h2>
+  <p>This plugin only changes how SCORM activities open, and it works the same with nothing else installed. To know
+  <b>how long each student spends inside each package</b>, eLearning Fácil offers two options, and both show their
+  clock inside the player:</p>
+  <div class="grid2">
+    <div class="card"><h4>Active Time Clock (free)</h4>
+      Measures real time in activities (only while the tab is visible and in focus), with a per-course report and
+      Excel and CSV downloads.</div>
+    <div class="card"><h4>The complete suite</h4>
+      Time you can prove in an audit, percentage of the course hours, per-activity detail, completion by time spent,
+      communications and the evidence file for each group.
+      <br><a href="https://elearningfacil.com">elearningfacil.com</a></div>
+  </div>
+  <div class="box ok"><div class="h">Why the same tab matters</div>
+    A SCORM in a new window is a window the browser can block and that time trackers don’t always see. In the same
+    tab, SCORM time is activity time: it is neither lost nor inflated.</div>
+</section>
+
+<!-- 6-7 -->
+<section class="part">
+  <h2 id="s6"><span class="num">6</span>What it changes and what it doesn’t</h2>
+  <table>
+    <tr><th>Yes</th><th>No</th></tr>
+    <tr><td>Sends the student to Moodle’s own player, as “Skip content structure page: Always” does.</td>
+        <td>It doesn’t change the SCORM module, the packages, attempts, grades or reports.</td></tr>
+    <tr><td>Gives the player page the theme’s minimal layout (no navigation bar or blocks) and adds its top bar.</td>
+        <td>It opens no windows and uses no overlays on the course: it is the activity page.</td></tr>
+    <tr><td>Installs and uninstalls without leaving a trace: it has no tables and stores no personal data.</td>
+        <td>It doesn’t change the settings of any activity.</td></tr>
+  </table>
+  <p>Free software (GPL v3), built to the Moodle™ plugin guidelines: no external calls or third-party resources,
+  a declared privacy provider, automated tests and code review on every release.</p>
+
+  <h2 id="s7"><span class="num">7</span>Frequently asked questions</h2>
+  <h3>A teacher says it doesn’t go straight in for them</h3>
+  <p>That is expected: anyone who can view the activity reports keeps the entry page, with the “Enter” button and
+  the report links. To see what the student sees, use <b>Switch role to… → Student</b>.</p>
+  <h3>I want one particular activity to open in a real new window</h3>
+  <p>Untick “New-window activities in the same tab”: every activity set that way opens its window again. It is a
+  site setting.</p>
+  <h3>The content looks cut off or doesn’t fill the window</h3>
+  <p>The player gives the package the whole window (minus the bar and, if the activity shows them, the table of
+  contents and the navigation panel) and adds scrollbars if it is larger. If it is still cut off, the size is fixed
+  by the package itself (the activity width and height only apply to the new window). If your theme had its own CSS
+  for the SCORM player, remove it: it wins over the plugin’s.</p>
+  <h3>The package’s own “Close” button does nothing</h3>
+  <p>It tries to close a window that doesn’t exist: in the current tab, leave with <b>Exit activity</b>, which closes
+  and saves the SCORM in the same way.</p>
+</section>
+
+<!-- 8 -->
+<section class="part">
+  <div class="partbar"><div class="k">eLearning Fácil</div><h1 id="s8">More plugins by eLearning Fácil</h1>
+    <p>Built for training providers, companies and academies that work with Moodle™.</p></div>
+  <div class="promo">
+    <a href="https://elearningfacil.com"><img src="class-manager_512.png" alt=""><div><b>Class Manager</b><span>Sell courses by the seat: your client signs up their people, with capped seats, an access period and an automatic welcome email.</span></div></a>
+    <a href="https://elearningfacil.com"><img src="bulk-certificate_512.png" alt=""><div><b>Bulk Certificate Manager</b><span>Filter, issue and download a whole group’s certificates in one zip, with Custom certificate or Workplace certificates.</span></div></a>
+    <a href="https://elearningfacil.com"><img src="active-time-clock_512.png" alt=""><div><b>Active Time Clock</b><span>Free: measures each student’s real time, only while the tab is active, with an Excel and CSV report.</span></div></a>
+    <a href="https://elearningfacil.com"><img src="pack_512.png" alt=""><div><b>The complete suite</b><span>Time you can prove, PDF reports, completion by time spent and an evidence file for every group.</span></div></a>
+  </div>
+  <div class="cta"><b style="font-family:'Poppins';font-size:13pt;">Want to know more?</b><br>
+    Drop us a line and we’ll tell you which one fits your Moodle™.<br>
+    <a href="https://elearningfacil.com">elearningfacil.com</a>
+    <p class="small" style="margin-top:3mm;">info@elearningfacil.com · WhatsApp +34 647 002 997</p></div>
+
+  <hr class="s">
+  <p class="small">Guide for the <code>local_efscorm</code> plugin · version 0.2.1 · © 2026 eLearning Fácil · <a href="https://elearningfacil.com">elearningfacil.com</a></p>
+  <hr class="s">
+  <p class="small">Moodle™ is a registered trademark of Moodle Pty Ltd. SCORM® is a registered trademark of Advanced Distributed Learning (ADL). eLearning Fácil is not affiliated with, associated with or endorsed by either; the names are used only to describe compatibility.</p>
+</section>
+
+</body>
+</html>
