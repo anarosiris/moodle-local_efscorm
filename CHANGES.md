@@ -1,45 +1,41 @@
-# Changelog — local_efscorm
+# Changelog — Direct SCORM player (local_efscorm)
+
+All notable changes to this plugin are listed here.
+
+## [0.2.2] - 2026-10-13
+
+- Documentation only: changelog and README rewritten in English; user guide available in English and Spanish.
+  No code changes.
 
 ## [0.2.1] - 2026-10-10
 
-Revisión externa de la 0.2.0 aplicada (20 hallazgos; seguridad: nada explotable). Verificado en navegador en un sitio
-limpio (5.3, Boost): paquete de 9 SCO con tabla de contenidos, plegada, 1366×768, 1366×600 y móvil.
-- Cursos de formato «actividad única»: «Salir de la actividad» iba en bucle (curso → actividad → reproductor); ahora
-  lleva a la portada del sitio, como hace el núcleo, y se respeta `preventskip=1`.
-- Con la tabla de contenidos visible el contenido perdía un 21 % de ancho (se restaba dos veces); al plegarla no se
-  reajustaba; en ventanas de menos de 730 px de alto sobraba una barra de desplazamiento (alto mínimo de 680 px del
-  núcleo); el panel de navegación entre SCO quedaba fuera de la ventana. El iframe ocupa ahora exactamente el hueco.
-- La ventana emergente de verdad (profesor, o entrada directa apagada) recibía la barra y «Salir» cargaba el curso
-  dentro de la ventana: la URL de la misma pestaña lleva la marca `efscormtab=1` y la ventana real no se toca.
-- `display=popup` escrito a mano en una actividad normal dejaba el layout `embedded` sin salida ni reloj: ahora es
-  pantalla completa como el resto.
-- La entrada directa comprueba la capacidad `mod/scorm:skipview` y las fechas de apertura y cierre, como el núcleo
-  (antes el alumno aterrizaba en un aviso casi tapado por la barra); los avisos del núcleo quedan bajo la barra.
-- Nombre de la actividad con `&` se veía como `&amp;` en la barra.
-- Ajuste «Ocultar la tabla de contenidos» también oculta la tabla «en menú desplegable»; `100dvh` en móvil;
-  salvaguarda contra la recursión de `redirect()` con avisos de depuración; registro de la actividad desde `$PAGE`.
-- Accesibilidad: la barra es un `header` con el nombre en `h1`, `:focus-visible`, botón de 40 px.
-- Textos: el reloj se ve en el reproductor (no «en la barra»); el ajuste principal apagado apaga también la entrada
-  directa; «complemento» en español. Guía: FAQ del contenido recortado corregida; capturas nuevas.
-- `maturity` STABLE. Tests: 8 PHPUnit (47 aserciones) con los casos nuevos; Behat sin depender del texto del paquete.
+First public release.
+
+### Fixed
+- Single-activity course format: **Exit activity** no longer loops back into the player; it goes to the site home
+  page, as Moodle does.
+- The content now fills exactly the available space when the table of contents is shown, collapsed or hidden, and on
+  small windows; the navigation panel between SCOs stays inside the window.
+- A real pop-up window (teachers, or direct entry turned off) is left untouched by the player.
+- Activities set to the pop-up display mode by hand are shown full screen like the rest.
+- Activity names containing `&` are displayed correctly in the top bar.
+- The “Hide the table of contents” setting also hides the drop-down table of contents.
+
+### Changed
+- Direct entry checks the `mod/scorm:skipview` capability and the open and close dates, exactly as Moodle core does.
+- Accessibility: the top bar is a `header` with the activity name as a heading, visible focus and a 40 px exit button.
+- Uses `100dvh` on mobile devices.
+- Maturity: stable.
 
 ## [0.2.0] - 2026-10-10
 
-Primera versión publicable (decisiones de Ana del 09-10 sobre las 8 preguntas del SPEC):
-- Nuevo ajuste «Actividades en ventana nueva, en la misma pestaña» (activado): con la entrada directa, las
-  actividades configuradas en ventana nueva se abren en el reproductor del núcleo en modo «popup» pero en la pestaña
-  actual, a pantalla completa, con la barra superior y «Salir de la actividad» (vuelve a la sección del curso).
-  Los bloqueadores de ventanas dejan de estorbar y el tiempo se mide como en cualquier página.
-- Barra superior con colores neutros (gris oscuro y blanco), válida para cualquier tema.
-- Nota para el administrador en la página de ajustes: con efreport o el Reloj gratuito el tiempo de cada SCORM
-  queda medido (nada para el alumno).
-- Nombre, activación solo de sitio, tabla de contenidos y página del profesor: se quedan como en 0.1.0.
-- Tests PHPUnit (entrada directa, misma pestaña, layout, ajustes) y Behat; guía corta en docs/manual; CI.
-
+### Added
+- Setting “New-window activities in the same tab” (on by default): activities configured to open in a new window are
+  shown full screen in the current tab, with the top bar and the **Exit activity** button. No more blocked pop-ups.
+- Neutral top bar colours (dark grey and white) that suit any theme.
+- PHPUnit and Behat tests and continuous integration on Moodle 5.1, 5.2 and 5.3.
 
 ## [0.1.0] - 2026-10-03
 
-Prototipo (ALPHA), sin publicar: entrada directa (hook before_http_headers + scorm_simple_play con «omitir
-estructura = siempre»), reproductor a pantalla completa en la misma página (layout popup + CSS/JS propios, barra
-superior con «Salir de la actividad» usando el enlace del núcleo), ajustes de sitio (activar, entrar directamente,
-ocultar tabla de contenidos). Preguntas abiertas en docs/SPEC.md §9.
+- Initial prototype (not published): direct entry, full-screen player on the same page with a top bar and an
+  **Exit activity** button, and site settings.
