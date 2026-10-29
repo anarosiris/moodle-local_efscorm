@@ -118,6 +118,10 @@ jobs:
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci mustache
 
+      - name: Grunt (AMD build up to date, eslint)
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci grunt --max-lint-warnings 0
+
       - name: Validate plugin structure
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci validate

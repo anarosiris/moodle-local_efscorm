@@ -21,9 +21,11 @@ namespace local_efscorm;
  *
  * Nothing of mod_scorm is modified: the activity page (view.php) is sent to the
  * core player exactly as "Skip content structure page: Always" does, and the
- * core player page (player.php) gets the theme's 'popup' layout plus our own
- * CSS/JS so the content fills the window. It is still the activity page, so
- * time-tracking plugins (local_efreport, local_eftimeclock) keep measuring it.
+ * core player page (player.php) gets the theme's 'popup' layout, the body
+ * classes the plugin stylesheet (styles.css) keys on and the player module
+ * (amd/src/player.js), so the content fills the window. It is still the
+ * activity page, so time-tracking plugins (local_efreport, local_eftimeclock)
+ * keep measuring it.
  *
  * Activities set to open in a new window are, with the "same tab" setting,
  * sent to the core player in its "popup" display mode but in the current tab:
@@ -40,9 +42,6 @@ class hook_callbacks {
     /** @var string URL parameter that marks the new-window player opened by this plugin in the current tab. */
     public const TAB_PARAM = 'efscormtab';
 
-    /** @var bool Whether the current page is being rendered as the full-screen player. */
-    private static bool $fullscreen = false;
-
     /** @var bool Set while redirecting: redirect() may render a page (debug notices), which runs the hook again. */
     private static bool $redirecting = false;
 
@@ -54,7 +53,6 @@ class hook_callbacks {
     public static function before_http_headers(\core\hook\output\before_http_headers $hook): void {
         global $PAGE;
 
-        self::$fullscreen = false;
         $off = self::$redirecting || empty(get_config('local_efscorm', 'enabled'));
         if ($off || !$PAGE->cm || $PAGE->cm->modname !== 'scorm') {
             return;
@@ -90,13 +88,44 @@ class hook_callbacks {
     }
 
     /**
-     * Marks the current page as the full-screen player.
+     * Marks the current page as the full-screen player: the theme's minimal
+     * layout, the body classes the plugin stylesheet keys on (full screen and,
+     * on request, the hidden table of contents) and the player module with
+     * the data of the top bar.
      */
     private static function fullscreen(): void {
         global $PAGE;
         $PAGE->set_pagelayout('popup');
         $PAGE->add_body_class('local-efscorm-fullscreen');
-        self::$fullscreen = true;
+        if (!empty(get_config('local_efscorm', 'hidetoc'))) {
+            $PAGE->add_body_class('local-efscorm-hidetoc');
+        }
+        $PAGE->requires->js_call_amd('local_efscorm/player', 'init', [self::bar_data()]);
+    }
+
+    /**
+     * The data of the top bar: the activity name (plain text; the module sets
+     * it as text), the label of the exit button and where it goes when the
+     * core exit button cannot be used (the new-window player has none, so the
+     * link goes back to the section of the course, as the core button would).
+     * In a "single activity" course the course page is the activity itself, so
+     * the exit goes to the site home, as the core does to avoid a redirection
+     * loop; teachers keep the course link.
+     *
+     * @return array {title, exit, fallback, force}
+     */
+    public static function bar_data(): array {
+        global $CFG, $PAGE;
+
+        $singleactivity = course_get_format($PAGE->course)->get_format() === 'singleactivity'
+            && !has_capability('mod/scorm:viewreport', $PAGE->context);
+        $fallback = $singleactivity ? $CFG->wwwroot . '/' : course_get_url($PAGE->course, $PAGE->cm->sectionnum)->out(false);
+        return [
+            'title' => format_string($PAGE->cm->name, true, ['context' => $PAGE->context, 'escape' => false]),
+            'exit' => get_string('exit', 'local_efscorm'),
+            'fallback' => $fallback,
+            'force' => $singleactivity,
+        ];
     }
 
     /**
@@ -208,116 +237,5 @@ class hook_callbacks {
     private static function scorm(): ?\stdClass {
         global $PAGE;
         return $PAGE->activityrecord ?: null;
-    }
-
-    /**
-     * CSS of the full-screen player, only on that page. Neutral colours
-     * (dark bar, white text) so it fits any theme.
-     *
-     * @param \core\hook\output\before_standard_head_html_generation $hook The hook.
-     */
-    public static function before_standard_head_html_generation(
-        \core\hook\output\before_standard_head_html_generation $hook
-    ): void {
-        if (!self::$fullscreen) {
-            return;
-        }
-        $hidetoc = !empty(get_config('local_efscorm', 'hidetoc'));
-        // Notes: #scorm_content already leaves room for the table of contents (75 % wide), so the iframe
-        // takes 100 % of it; its height is the window minus the bar, whatever sits above it (the
-        // collapsed table of contents) and below it (the SCO navigation panel), measured by the script;
-        // the core sets an inline height of at least 680px on #scorm_layout, hence the !important; the
-        // notices the core prints outside #scormpage (not open yet, hidden, no attempts left) land below
-        // the fixed bar thanks to the padding on the main region.
-        $css = '
-body.local-efscorm-fullscreen { overflow: hidden; }
-.local-efscorm-fullscreen #page, .local-efscorm-fullscreen #page-wrapper, .local-efscorm-fullscreen #page-content,
-.local-efscorm-fullscreen #region-main-box, .local-efscorm-fullscreen #region-main, .local-efscorm-fullscreen [role="main"] {
-    margin: 0; padding: 0; max-width: none; }
-.local-efscorm-fullscreen #region-main { padding-top: 48px; }
-.local-efscorm-fullscreen #scormpage { position: fixed !important; top: 48px !important; left: 0 !important;
-    right: 0 !important; bottom: 0 !important; width: auto !important; height: auto !important; margin: 0 !important;
-    padding: 0 !important; overflow: auto !important; background: #fff; }
-.local-efscorm-fullscreen #scormpage #scorm_layout { height: auto !important; margin-bottom: 0 !important; }
-.local-efscorm-fullscreen #scorm_object { border: 0; display: block; width: 100% !important;
-    height: calc(100vh - 48px - var(--local-efscorm-top, 0px) - var(--local-efscorm-bottom, 0px)) !important;
-    height: calc(100dvh - 48px - var(--local-efscorm-top, 0px) - var(--local-efscorm-bottom, 0px)) !important;
-    min-height: 200px; }
-.local-efscorm-fullscreen .local-efscorm-coreexit { display: none !important; }
-#local-efscorm-bar { position: fixed; top: 0; left: 0; right: 0; height: 48px; z-index: 1040; display: flex;
-    align-items: center; justify-content: space-between; gap: 12px; padding: 0 14px; background: #1f2937; color: #fff;
-    font: 600 15px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-#local-efscorm-bar h1.local-efscorm-title { font: inherit; color: inherit; margin: 0; overflow: hidden;
-    text-overflow: ellipsis; white-space: nowrap; }
-#local-efscorm-bar a.local-efscorm-exit { flex: none; display: inline-flex; align-items: center; min-height: 40px;
-    color: #1f2937; background: #fff; border-radius: 999px; padding: 0 18px; text-decoration: none; font-weight: 700; }
-#local-efscorm-bar a.local-efscorm-exit:hover { background: #e5e7eb; color: #111827; }
-#local-efscorm-bar a.local-efscorm-exit:focus-visible { background: #e5e7eb; color: #111827;
-    outline: 2px solid #fff; outline-offset: 2px; }
-' . ($hidetoc ? '.local-efscorm-fullscreen #scorm_toc, .local-efscorm-fullscreen #scorm_toc_toggle,
-.local-efscorm-fullscreen #scormnav { display: none !important; }
-.local-efscorm-fullscreen #scorm_content { margin-left: 0 !important; width: 100% !important; }' : '');
-        $hook->add_html('<style id="local-efscorm-css">' . $css . '</style>');
-    }
-
-    /**
-     * The top bar with the activity name and the exit button (same link as the
-     * core exit button, so the SCORM is closed and saved the usual way; in the
-     * new-window player there is no core button, so the link goes back to the
-     * section of the course, as the core button would). In a "single activity"
-     * course the course page is the activity itself, so the exit goes to the
-     * site home, as the core does to avoid a redirection loop.
-     *
-     * @param \core\hook\output\before_footer_html_generation $hook The hook.
-     */
-    public static function before_footer_html_generation(\core\hook\output\before_footer_html_generation $hook): void {
-        global $CFG, $PAGE;
-
-        if (!self::$fullscreen) {
-            return;
-        }
-        $singleactivity = course_get_format($PAGE->course)->get_format() === 'singleactivity'
-            && !has_capability('mod/scorm:viewreport', $PAGE->context);
-        $fallback = $singleactivity ? $CFG->wwwroot . '/' : course_get_url($PAGE->course, $PAGE->cm->sectionnum)->out(false);
-        $data = [
-            'title' => format_string($PAGE->cm->name, true, ['context' => $PAGE->context, 'escape' => false]),
-            'exit' => get_string('exit', 'local_efscorm'),
-            'fallback' => $fallback,
-            'force' => $singleactivity,
-        ];
-        $json = json_encode($data, JSON_HEX_TAG | JSON_HEX_AMP);
-        $hook->add_html('<script id="local-efscorm-js">(function () {
-    var d = ' . $json . ';
-    var core = document.querySelector("#page-mod-scorm-player .flex-row-reverse > a.btn, " +
-        "#page-mod-scorm-player .d-flex.flex-row-reverse a.btn");
-    var href = (core && !d.force) ? core.getAttribute("href") : d.fallback;
-    if (core && core.parentElement) { core.parentElement.classList.add("local-efscorm-coreexit"); }
-    var bar = document.createElement("header");
-    bar.id = "local-efscorm-bar"; bar.setAttribute("role", "banner");
-    var t = document.createElement("h1"); t.className = "local-efscorm-title";
-    t.textContent = d.title; t.title = d.title;
-    var a = document.createElement("a"); a.className = "local-efscorm-exit"; a.href = href; a.textContent = d.exit;
-    bar.appendChild(t); bar.appendChild(a);
-    document.body.insertBefore(bar, document.body.firstChild);
-    var fit = function () {
-        var o = document.getElementById("scorm_object");
-        var page = document.getElementById("scormpage");
-        if (!o || !page) { return; }
-        var top = o.getBoundingClientRect().top - page.getBoundingClientRect().top + page.scrollTop;
-        var nav = document.getElementById("scorm_navpanel");
-        var bottom = (nav && nav.offsetParent) ? nav.offsetHeight : 0;
-        document.documentElement.style.setProperty("--local-efscorm-top", Math.max(0, Math.round(top)) + "px");
-        document.documentElement.style.setProperty("--local-efscorm-bottom", Math.round(bottom) + "px");
-    };
-    var refit = function () { window.requestAnimationFrame(fit); setTimeout(fit, 300); };
-    fit();
-    window.addEventListener("resize", refit);
-    setTimeout(fit, 500); setTimeout(fit, 2000);
-    document.addEventListener("click", function (e) {
-        if (e.target && e.target.closest && e.target.closest("#scorm_toc_toggle")) { refit(); }
-    });
-    var content = document.getElementById("scorm_content");
-    if (content && window.ResizeObserver) { new ResizeObserver(refit).observe(content); }
-})();</script>');
     }
 }

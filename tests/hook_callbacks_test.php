@@ -99,16 +99,17 @@ final class hook_callbacks_test extends \advanced_testcase {
     }
 
     /**
-     * The data the footer script embeds (title, exit, fallback, force) on the given page.
+     * The data (title, exit, fallback, force) the page hands to the player
+     * module through js_call_amd(), on the given page.
      *
      * @param \moodle_page $page
-     * @return array|null Null when the bar is not emitted.
+     * @return array|null Null when the module is not called (not the full-screen player).
      */
-    private function footer_data(\moodle_page $page): ?array {
-        $renderer = new \core\output\core_renderer($page, RENDERER_TARGET_GENERAL);
-        $footer = new \core\hook\output\before_footer_html_generation($renderer);
-        hook_callbacks::before_footer_html_generation($footer);
-        if (!preg_match('/var d = (\{.*?\});/s', $footer->get_output(), $m)) {
+    private function bar_data(\moodle_page $page): ?array {
+        $property = new \ReflectionProperty(\core\output\requirements\page_requirements_manager::class, 'amdjscode');
+        $code = implode("\n", $property->getValue($page->requires));
+        $call = "/require\\(\\['local_efscorm\\/player'\\], function\\(amd\\) \\{amd\\.init\\((\\{.*?\\})\\);/s";
+        if (!preg_match($call, $code, $m)) {
             return null;
         }
         return json_decode($m[1], true);
@@ -272,11 +273,12 @@ final class hook_callbacks_test extends \advanced_testcase {
     }
 
     /**
-     * The CSS and the top bar are only emitted on the full-screen player page;
-     * the activity name travels unescaped in the JSON (the script sets it as
-     * text) and the exit falls back to the section of the course.
+     * The body classes the stylesheet keys on and the player module (with the
+     * data of the top bar) are only set on the full-screen player page; the
+     * activity name travels as plain text (the module sets it as text) and
+     * the exit falls back to the section of the course.
      */
-    public function test_css_and_bar_only_on_the_fullscreen_player(): void {
+    public function test_classes_and_bar_only_on_the_fullscreen_player(): void {
         global $DB;
         $student = $this->getDataGenerator()->create_and_enrol($this->course, 'student');
         $this->setUser($student);
@@ -285,30 +287,25 @@ final class hook_callbacks_test extends \advanced_testcase {
         $this->cm = get_fast_modinfo($this->course)->get_cm($this->scorm->cmid);
 
         $page = $this->run_hook('player');
-        $renderer = new \core\output\core_renderer($page, RENDERER_TARGET_GENERAL);
-        $head = new \core\hook\output\before_standard_head_html_generation($renderer);
-        hook_callbacks::before_standard_head_html_generation($head);
-        $this->assertStringContainsString('local-efscorm-css', $head->get_output());
-        $data = $this->footer_data($page);
+        $this->assertStringContainsString('local-efscorm-fullscreen', $page->bodyclasses);
+        $this->assertStringNotContainsString('local-efscorm-hidetoc', $page->bodyclasses);
+        $data = $this->bar_data($page);
         $this->assertNotNull($data);
         $this->assertSame('Multi SCO & TOC 1', $data['title']);
         $this->assertSame(get_string('exit', 'local_efscorm'), $data['exit']);
         $this->assertFalse($data['force']);
         $this->assertSame(course_get_url($this->course, $this->cm->sectionnum)->out(false), $data['fallback']);
 
-        // The hidden table of contents, on request.
+        // The hidden table of contents, on request: a body class the stylesheet acts on.
         set_config('hidetoc', 1, 'local_efscorm');
-        $head = new \core\hook\output\before_standard_head_html_generation($renderer);
-        hook_callbacks::before_standard_head_html_generation($head);
-        $this->assertStringContainsString('#scormnav', $head->get_output());
+        $page = $this->run_hook('player');
+        $this->assertStringContainsString('local-efscorm-hidetoc', $page->bodyclasses);
 
         // Not on the activity page.
         $this->setUser($this->getDataGenerator()->create_and_enrol($this->course, 'editingteacher'));
         $page = $this->run_hook('view');
-        $head = new \core\hook\output\before_standard_head_html_generation($renderer);
-        hook_callbacks::before_standard_head_html_generation($head);
-        $this->assertSame('', $head->get_output());
-        $this->assertNull($this->footer_data($page));
+        $this->assertStringNotContainsString('local-efscorm-', $page->bodyclasses);
+        $this->assertNull($this->bar_data($page));
     }
 
     /**
@@ -327,12 +324,12 @@ final class hook_callbacks_test extends \advanced_testcase {
         $cm = get_fast_modinfo($course)->get_cm($scorm->cmid);
 
         $this->setUser($gen->create_and_enrol($course, 'student'));
-        $data = $this->footer_data($this->run_hook('player', [], $cm));
+        $data = $this->bar_data($this->run_hook('player', [], $cm));
         $this->assertTrue($data['force']);
         $this->assertSame($CFG->wwwroot . '/', $data['fallback']);
 
         $this->setUser($gen->create_and_enrol($course, 'editingteacher'));
-        $data = $this->footer_data($this->run_hook('player', [], $cm));
+        $data = $this->bar_data($this->run_hook('player', [], $cm));
         $this->assertFalse($data['force']);
         $this->assertSame(course_get_url($course, $cm->sectionnum)->out(false), $data['fallback']);
     }

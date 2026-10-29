@@ -26,8 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_efscorm';
-$plugin->version   = 2026101300;
-$plugin->release   = '0.2.2';
+$plugin->version   = 2026102900;
+$plugin->release   = '0.3.0';
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->requires  = 2025100600;   // Moodle 5.1.0 (branch 501), consistent with $plugin->supported.
 $plugin->supported = [501, 503];   // Officially supported: Moodle 5.1 to 5.3.

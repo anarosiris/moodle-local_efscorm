@@ -1,0 +1,130 @@
+/*
+ * Direct SCORM player (local_efscorm): the full-screen player page.
+ *
+ * Every rule is scoped to the body class the plugin adds on that page
+ * (local-efscorm-fullscreen) or to the bar it builds, so nothing leaks into
+ * other pages. Neutral colours (dark bar, white text) so it fits any theme.
+ *
+ * Notes: #scorm_content already leaves room for the table of contents (75 %
+ * wide), so the iframe takes 100 % of it; its height is the window minus the
+ * bar, whatever sits above it (the collapsed table of contents) and below it
+ * (the SCO navigation panel), measured by the player module; the core sets an
+ * inline height of at least 680px on #scorm_layout, hence the !important; the
+ * notices the core prints outside #scormpage (not open yet, hidden, no
+ * attempts left) land below the fixed bar thanks to the padding on the main
+ * region.
+ */
+body.local-efscorm-fullscreen {
+    overflow: hidden;
+}
+
+.local-efscorm-fullscreen #page,
+.local-efscorm-fullscreen #page-wrapper,
+.local-efscorm-fullscreen #page-content,
+.local-efscorm-fullscreen #region-main-box,
+.local-efscorm-fullscreen #region-main,
+.local-efscorm-fullscreen [role="main"] {
+    margin: 0;
+    padding: 0;
+    max-width: none;
+}
+
+.local-efscorm-fullscreen #region-main {
+    padding-top: 48px;
+}
+
+.local-efscorm-fullscreen #scormpage {
+    position: fixed !important;
+    top: 48px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: auto !important;
+    background: #fff;
+}
+
+.local-efscorm-fullscreen #scormpage #scorm_layout {
+    height: auto !important;
+    margin-bottom: 0 !important;
+}
+
+.local-efscorm-fullscreen #scorm_object {
+    border: 0;
+    display: block;
+    width: 100% !important;
+    height: calc(100vh - 48px - var(--local-efscorm-top, 0px) - var(--local-efscorm-bottom, 0px)) !important;
+    height: calc(100dvh - 48px - var(--local-efscorm-top, 0px) - var(--local-efscorm-bottom, 0px)) !important;
+    min-height: 200px;
+}
+
+.local-efscorm-fullscreen .local-efscorm-coreexit {
+    display: none !important;
+}
+
+/* Hidden table of contents (site setting): no TOC, no toggle, no drop-down navigation. */
+.local-efscorm-fullscreen.local-efscorm-hidetoc #scorm_toc,
+.local-efscorm-fullscreen.local-efscorm-hidetoc #scorm_toc_toggle,
+.local-efscorm-fullscreen.local-efscorm-hidetoc #scormnav {
+    display: none !important;
+}
+
+.local-efscorm-fullscreen.local-efscorm-hidetoc #scorm_content {
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+
+/* The top bar. */
+#local-efscorm-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    z-index: 1040;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 14px;
+    background: #1f2937;
+    color: #fff;
+    font: 600 15px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+#local-efscorm-bar h1.local-efscorm-title {
+    font: inherit;
+    color: inherit;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#local-efscorm-bar a.local-efscorm-exit {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    color: #1f2937;
+    background: #fff;
+    border-radius: 999px;
+    padding: 0 18px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+#local-efscorm-bar a.local-efscorm-exit:hover {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+#local-efscorm-bar a.local-efscorm-exit:focus-visible {
+    background: #e5e7eb;
+    color: #111827;
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}

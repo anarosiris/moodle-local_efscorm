@@ -2,6 +2,16 @@
 
 All notable changes to this plugin are listed here.
 
+## [0.3.0] - 2026-10-29
+
+### Changed
+- The player's JavaScript now lives in an AMD module (`amd/src/player.js`, loaded with `js_call_amd()`) and its CSS
+  in the plugin's `styles.css`, instead of being printed inline on the page, as suggested in the Moodle Plugins
+  Directory review (MMR-425). The "hide the table of contents" setting is now a body class the stylesheet acts on.
+  No change in behaviour, settings or capabilities.
+- The two output hooks (`before_standard_head_html_generation`, `before_footer_html_generation`) are no longer
+  registered: the body classes and the module call are set when the page is prepared.
+
 ## [0.2.2] - 2026-10-13
 
 - Documentation only: changelog and README rewritten in English; user guide available in English and Spanish.
