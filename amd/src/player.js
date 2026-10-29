@@ -97,6 +97,8 @@ export const init = (data) => {
     const core = document.querySelector(SELECTORS.COREEXIT);
     const href = (core && !data.force) ? core.getAttribute('href') : data.fallback;
     if (core && core.parentElement) {
+        // Bootstrap's d-flex is !important: drop it so the stylesheet can hide the core bar.
+        core.parentElement.classList.remove('d-flex');
         core.parentElement.classList.add('local-efscorm-coreexit');
     }
     addBar(data.title, data.exit, href);
