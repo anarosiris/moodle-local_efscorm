@@ -37,6 +37,10 @@ Report bugs and ask questions in this repository's [issue tracker](https://githu
 
 Developed and maintained by [eLearning Fácil](https://elearningfacil.com), an independent company that builds plugins for Moodle™ for training providers and companies. Not affiliated with Moodle Pty Ltd.
 
+## Privacy
+
+The plugin stores no personal data and creates no database tables: it only changes how SCORM activities are opened and displayed. It implements Moodle's Privacy API with a null provider, so nothing is exported or deleted on data requests because nothing is kept.
+
 ## Licence
 
 GNU GPL v3 or later. Moodle™ is a registered trademark of Moodle Pty Ltd. SCORM® is a registered trademark of
