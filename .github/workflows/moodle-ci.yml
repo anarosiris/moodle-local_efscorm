@@ -5,7 +5,8 @@ name: Moodle Plugin CI
 # Disparadores (presupuesto de Actions, 04-10-2026):
 #  - push a una rama: solo la entrada «quick» de la matriz (8.3 + 5.2 + MariaDB, con Behat);
 #    si el commit empieza por «release », no corre nada (la etiqueta lanza la matriz completa);
-#  - push de una etiqueta v*, pull request o lanzamiento manual: la matriz completa;
+#  - push de una etiqueta v*, pull request o lanzamiento manual: la matriz completa
+#    (una etiqueta que solo cambia docs/, lang/ no inglés, README, CHANGES y version.php: solo quick, sin Behat);
 #  - cambios solo en docs/ o en ficheros .md no lanzan nada.
 on:
   push:
@@ -33,15 +34,35 @@ jobs:
     outputs:
       include: ${{ steps.pick.outputs.include }}
     steps:
+      # Only for tags: the history is needed to compare with the previous tag.
+      - uses: actions/checkout@v4
+        if: github.ref_type == 'tag'
+        with:
+          fetch-depth: 0
       - id: pick
         env:
           FULL: '[{"php":"8.2","moodle-branch":"MOODLE_501_STABLE"},{"php":"8.3","moodle-branch":"MOODLE_502_STABLE","quick":true,"behat":true},{"php":"8.3","moodle-branch":"MOODLE_502_STABLE","db":"pgsql"},{"php":"8.3","moodle-branch":"MOODLE_503_STABLE","mariadb":"11.4"}]'
         run: |
           if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref_type }}" = "branch" ]; then
             echo "include=$(echo "$FULL" | jq -c '[.[] | select(.quick == true)]')" >> "$GITHUB_OUTPUT"
-          else
-            echo "include=$(echo "$FULL" | jq -c .)" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+          # Budget: a tag whose only changes since the previous tag are documentation, non-English
+          # language packs, README, CHANGES and version.php runs the quick row alone, without Behat.
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            prev=$(git describe --tags --abbrev=0 "${{ github.sha }}^" 2>/dev/null || true)
+            if [ -n "$prev" ]; then
+              changed=$(git diff --name-only "$prev" "${{ github.sha }}")
+              code=$(echo "$changed" | grep -v -E '^(docs/|lang/|README|CHANGES|version\.php$|.*\.md$)' || true)
+              en=$(echo "$changed" | grep -E '^lang/en/' || true)
+              if [ -z "$code" ] && [ -z "$en" ]; then
+                echo "Documentation-only tag since $prev: quick row without Behat."
+                echo "include=$(echo "$FULL" | jq -c '[.[] | select(.quick == true) | del(.behat)]')" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+            fi
+          fi
+          echo "include=$(echo "$FULL" | jq -c .)" >> "$GITHUB_OUTPUT"
 
   ci:
     needs: prepare
