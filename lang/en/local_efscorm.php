@@ -26,8 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['exit'] = 'Exit activity';
-$string['pluginname'] = 'Direct SCORM player';
-$string['privacy:metadata'] = 'The Direct SCORM player plugin only changes how SCORM activities are opened and displayed. It stores no personal data.';
+$string['pluginname'] = 'Direct SCORM Player';
+$string['privacy:metadata'] = 'The Direct SCORM Player plugin only changes how SCORM activities are opened and displayed. It stores no personal data.';
 $string['setting_directentry'] = 'Enter directly';
 $string['setting_directentry_desc'] = 'Students go straight into the content when they click the activity, without the "Enter" page. Teachers and anyone who can view the reports keep the normal page, as Moodle does with "Skip content structure page: Always".';
 $string['setting_enabled'] = 'Full-screen player';
@@ -36,5 +36,5 @@ $string['setting_hidetoc'] = 'Hide the table of contents';
 $string['setting_hidetoc_desc'] = 'In the full-screen player, hide the SCORM table of contents even if the activity shows it.';
 $string['setting_samewindow'] = 'New-window activities in the same tab';
 $string['setting_samewindow_desc'] = 'Activities set to open in a new window are shown in the full-screen player in the current tab instead (with direct entry). Pop-up blockers no longer get in the way and time-tracking plugins measure the content as any other page. Untick to keep the new window for those activities.';
-$string['setting_timetracking'] = 'Time spent on each SCORM';
-$string['setting_timetracking_desc'] = 'This plugin only changes how SCORM activities open. With the Time tracking plugin of the Pack Formación Bonificada Pro (local_efreport) or the free Clock (local_eftimeclock) by eLearning Fácil, the time each student spends inside every SCORM is measured, and the student sees their clock in the player.';
+$string['setting_timetracking'] = 'Active time on each SCORM';
+$string['setting_timetracking_desc'] = 'This plugin only changes how SCORM activities open. With the Training Evidence Report (local_efreport) or the free Time Clock (local_eftimeclock) by eLearning Fácil, each student\'s active time inside every SCORM is measured and the student sees their clock in the player.';

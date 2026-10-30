@@ -1,6 +1,12 @@
-# Changelog — Direct SCORM player (local_efscorm)
+# Changelog — Direct SCORM Player (local_efscorm)
 
 All notable changes to this plugin are listed here.
+
+## [0.3.1] - 2026-10-30
+
+### Changed
+- Name written as "Direct SCORM Player" (capitalised product name) in the plugin name, README and guides.
+- Setting "Active time on each SCORM" (was "Time spent on each SCORM") and its help now name the Training Evidence Report (local_efreport) and the free Time Clock (local_eftimeclock) by eLearning Fácil. No change in behaviour.
 
 ## [0.3.0] - 2026-10-29
 

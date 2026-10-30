@@ -1,4 +1,4 @@
-# Direct SCORM player (local_efscorm)
+# Direct SCORM Player (local_efscorm)
 
 Free plugin for Moodle 5.1+ by eLearning Fácil. It changes how SCORM activities are opened, without touching mod_scorm:
 
@@ -12,11 +12,11 @@ Free plugin for Moodle 5.1+ by eLearning Fácil. It changes how SCORM activities
   full-screen player in the current tab (setting on by default): no pop-up blockers, and the time is measured like on
   any other page. Untick the setting to keep the new window.
 
-Settings: Site administration → Plugins → Local plugins → Direct SCORM player (full-screen player, direct entry,
+Settings: Site administration → Plugins → Local plugins → Direct SCORM Player (full-screen player, direct entry,
 new-window activities in the same tab, hide the table of contents). No data is stored: the plugin has no tables and a
 null privacy provider.
 
-Current version: **0.3.0** — see [CHANGES.md](CHANGES.md).
+Current version: **0.3.1** — see [CHANGES.md](CHANGES.md).
 
 ## Documentation
 

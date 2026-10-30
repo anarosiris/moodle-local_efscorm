@@ -1,5 +1,5 @@
 @local @local_efscorm
-Feature: Direct SCORM player
+Feature: Direct SCORM Player
   In order to get students straight into SCORM content
   As a site
   I need students to land on the player while teachers keep the activity page
