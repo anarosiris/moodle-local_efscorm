@@ -35,7 +35,7 @@ Requirements: Moodle 5.1, 5.2 or 5.3 · PHP 8.2+ · MySQL/MariaDB or PostgreSQL 
 
 Report bugs and ask questions in this repository's [issue tracker](https://github.com/anarosiris/moodle-local_efscorm/issues).
 
-Developed and maintained by [eLearning Fácil](https://elearningfacil.com), an independent company that builds plugins for Moodle™ for training providers and companies. Not affiliated with Moodle Pty Ltd.
+Developed and maintained by [eLearning Fácil](https://elearningfacil.com), an independent company that builds Moodle™ plugins and themes for training providers and companies. Not affiliated with Moodle Pty Ltd.
 
 ## Privacy
 
